@@ -21,6 +21,6 @@ To help with the decision process of choosing a particular product, use the "Cre
 
 
 ## **Upcoming Features**
-* Ability to compare/contrast products side by side
-* Display of sale and clearance prices
-* Display of all images associated with the product
+- [ ] Ability to compare/contrast products side by side
+- [ ] Display of sale and clearance prices
+- [ ] Display of all images associated with the product
