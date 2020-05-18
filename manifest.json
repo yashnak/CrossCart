@@ -1,5 +1,5 @@
 {
-    "name": "Shopping Cart",
+    "name": "Cross Cart",
     "description" : "Base Level Extension",
     "version": "1.0",
     "manifest_version": 2,
@@ -16,8 +16,6 @@
           "*://*/*",
           "http://*/*",
           "https://*/*"
-
-
     ],
 
     "content_scripts":[
@@ -26,9 +24,6 @@
         "js": ["min.js", "ui.min.js", "prod_info.js"],
         "run_at": "document_start",
         "all_frames": true
-
       }
-
     ]
-
   }

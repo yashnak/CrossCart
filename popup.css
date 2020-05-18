@@ -7,15 +7,12 @@ h1 {
   color: white;
   padding: 10px;
   border-radius: 12px;
-
 }
 
 td {
   font-size: 20px;
-  font-weight: bolder; 
+  font-weight: bolder;
   cursor: pointer;
-
-
 }
 
 
@@ -59,7 +56,6 @@ button:active {
   width: 100%;
   font-size: 12px;
   background: darkcyan;
-
 }
 
 #add_item:hover,

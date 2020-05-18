@@ -1,18 +1,19 @@
-console.log("in prod_info");
+/*
+Content script to extract all necessary cart elements from the retail site, such as
+price, image, and name. 
+*/
+
+console.log("In prod_info.");
 var images = [];
 var $ = jQuery;
 
+//get all images on current screen
 for(var i = 0; i < document.images.length; i++){
   images.push(document.images[i]);
 }
 
+//check if data is in current screen window
 function isElementInViewport (el) {
-
-    // // Special bonus for those using jQuery
-    // if (typeof jQuery === "function" && el instanceof jQuery) {
-    //     el = el[0];
-    // }
-
     var rect = el.getBoundingClientRect();
     var is = (
         rect.top >= 0 &&
@@ -20,12 +21,11 @@ function isElementInViewport (el) {
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
         rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
     );
-
-    console.log("IN VIEWPORT: " + is);
     return is;
 }
 
 
+//iterate through all images on screen and select the biggest one (usually the product image)
 function find_max_img(images) {
   var max_dim = 0;
   var max_img = null;
@@ -38,19 +38,16 @@ function find_max_img(images) {
     }
   }
 
-  console.log("MAX IMAGE: " + max_img);
   return max_img.src;
 }
 
+//get price of product by extracting all "$" text on screen, and finding the elements with the biggest appearance on screen
 function get_all_inner_html(){
-  // console.log("INNER TEXT: ")
-  // console.log(document.documentElement.innerText);
-  //console.log("CLIENT HEIGHT: " + document.body.clientHeight);
+
   var span_div = $.makeArray($('span:contains("$")'));
   var div_div = $.makeArray($('div:contains("$")'));
-  //console.log("FIRST SPAN DIV: " + span_div.first().innerText);
   var max_divs = [];
-  console.log("SPAN INNER: ")
+
   for (var i = 0; i < span_div.length/2; i++) {
     var new_lines = span_div[i].innerText.split("\n");
 
@@ -71,10 +68,8 @@ function get_all_inner_html(){
     }
   }
 
-  console.log("DIV INNER: ");
   for (var i = 0; i < div_div.length/2; i++) {
     var new_lines = div_div[i].innerText.split("\n");
-
 
     if (new_lines.length == 1) {
       var line_text = div_div[i].innerText;
@@ -88,14 +83,10 @@ function get_all_inner_html(){
 
       }
 
-
     }
-
-
 
   }
 
-  console.log("MAX DIVS: " + max_divs);
   var max_size = 0;
   var max_div = null;
   for (var i = 0; i < max_divs.length; i++) {
@@ -108,44 +99,16 @@ function get_all_inner_html(){
       max_size = size;
       max_div = max_divs[i];
     }
-    //console.log(max_divs[i].innerText);
-    //console.log("SIZE: " + size);
-
   }
 
-  console.log("MAX DIV: " + max_div.innerText);
-
-
-  //console.log(span_div[0].innerText);
-  //console.log(span_div);
-
-  //console.log(span_div);
-  //span_div.css("background-color", "yellow");
-  // var cont = $("div:contains('$')");
-  // console.log(cont);
-  // var parent_span = $("span:contains('$')").closest("div");
-  // var p_div = $(":contains('$')").closest("div");
-  // //var p_div = $("div:contains('$')").first();
-  //
-  // //var parent_div = p_div.closest("div");
-  // console.log("PARENTTTTTTTT");
-  // console.log(p_div);
-  // var reg = /^\d+$/;
-  // //console.log($("div:contains('$')").first());//.closest("div").css("background-color", "yellow");
-  // console.log($("div:contains('$')").first());
-  // parent_span.css("background-color", "green");
-  // //$("div:contains('/^\d+$/')").first().css("background-color", "yellow");
-  // $(this).attr('innerHTML')
-
-  //parent_div.css("background-color", "yellow");
   return max_div.innerText;
 
 
 }
 
+//get product name by getting the h1 element of biggest size
 function get_prod_name(){
   var h1_div = $.makeArray($('h1'));
-  console.log("PROD NAME: ")
   var max_size = 0;
   var prod_name = null;
   for(var i = 0; i < h1_div.length; i++) {
@@ -154,7 +117,6 @@ function get_prod_name(){
     var width = pos.width;
     var size = height * width;
     console.log(h1_div[i].innerText);
-    console.log("SIZE: " + size);
 
     if (size > max_size) {
       max_size = size;
@@ -163,11 +125,11 @@ function get_prod_name(){
 
   }
 
-  console.log("PRODUCT NAME: "  + prod_name);
   return prod_name;
 
 }
 
+//return findings to cart.js
 var max_img = find_max_img(images);
 var prod = get_prod_name();
 var price = get_all_inner_html();
@@ -179,8 +141,3 @@ var obj = new Object();
    obj.price = price;
    var jsonString= JSON.stringify(obj);
 jsonString;
-//max_img;
-//max_img;
-
-
-//chrome.runtime.sendMessage({method:"downloadImages",image:max_img});
