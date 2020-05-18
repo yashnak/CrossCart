@@ -1,19 +1,21 @@
-/*Popup screen with items in table. 
+/*Popup screen with items in table.
 // "item_keys" - array of item names on popup page
 // "table_length" - int of popup table row count
 */
 
-$(document).ready(function () {
+$(document).ready(function() {
 
   //get
   chrome.storage.sync.get("item_keys", function(result) {
 
-      if (result == null) {
-        chrome.storage.sync.set({"item_keys": [] }, function(){
+    if (result == null) {
+      chrome.storage.sync.set({
+        "item_keys": []
+      }, function() {
 
-        });
+      });
 
-      }
+    }
 
   });
 
@@ -27,25 +29,25 @@ $(document).ready(function () {
 
   //populate page with existing items in a table
   chrome.storage.sync.get("table_length", function(row_count) {
-          console.log('Value currently is ' + row_count.table_length);
-          if (row_count.table_length != null) {
+    console.log('Value currently is ' + row_count.table_length);
+    if (row_count.table_length != null) {
 
-            create_table();
+      create_table();
 
-            chrome.storage.sync.get("item_keys", function(result) {
-              console.log(result.item_keys)
-              for (var i = 0; i < result.item_keys.length; i++) {
-                if (result.item_keys[i] !== null) {
-                    add_to_table(result.item_keys[i]);
-                }
-              }
-
-            });
-
+      chrome.storage.sync.get("item_keys", function(result) {
+        console.log(result.item_keys)
+        for (var i = 0; i < result.item_keys.length; i++) {
+          if (result.item_keys[i] !== null) {
+            add_to_table(result.item_keys[i]);
           }
+        }
+
+      });
+
+    }
   });
 
-  $("#add_item").on("click", function(e){
+  $("#add_item").on("click", function(e) {
     console.log("add_item was clicked.");
     var add_item = window.prompt("Add item name");
     if ($.trim(add_item) != "") {
@@ -57,30 +59,32 @@ $(document).ready(function () {
   });
 
 
-//update "selected" value in storage to item clicked, then go to that item's cart
-  $(document).on('click','.item_list',function(e) {
+  //update "selected" value in storage to item clicked, then go to that item's cart
+  $(document).on('click', '.item_list', function(e) {
     //handler code here
     console.log("table item clicked.");
 
-    var $row = $(this).closest("tr");        // Finds the closest row <tr>
-    $tds = $row.find("td:first-child");                 // Finds the 2nd <td> element
+    var $row = $(this).closest("tr"); // Finds the closest row <tr>
+    $tds = $row.find("td:first-child"); // Finds the 2nd <td> element
 
-    $.each($tds, function() {                // Visits every single <td> element
-      console.log($(this).text());         // Prints out the text within the <td>
+    $.each($tds, function() { // Visits every single <td> element
+      console.log($(this).text()); // Prints out the text within the <td>
     });
 
-    chrome.storage.sync.set({"selected": $tds.text()}, function(){
+    chrome.storage.sync.set({
+      "selected": $tds.text()
+    }, function() {
       console.log("selected" + " " + $tds.text());
     });
 
-    window.location.href='cart.html';
+    window.location.href = 'cart.html';
 
 
 
   });
 
-//introduce edit item name form
-  $(document).on('click','#item_edit_button',function(e) {
+  //introduce edit item name form
+  $(document).on('click', '#item_edit_button', function(e) {
     //handler code here
     var edit_td = document.createElement("td");
     var edit_div = document.createElement("div");
@@ -109,49 +113,51 @@ $(document).ready(function () {
     $row.find("td:nth-child(2)").replaceWith(edit_td);
   });
 
-//update item name in table and in storage
-  $(document).on('click','#edit_item_enter',function(e) {
-      var input = document.getElementById('edit_text').value;
+  //update item name in table and in storage
+  $(document).on('click', '#edit_item_enter', function(e) {
+    var input = document.getElementById('edit_text').value;
 
-      //get table item associated with the edit item click
-      var $row = $(this).closest("tr");
-      var idx = $row.index();
-      $tds = $row.find("td:first-child");
-      var item = $tds.text();
+    //get table item associated with the edit item click
+    var $row = $(this).closest("tr");
+    var idx = $row.index();
+    $tds = $row.find("td:first-child");
+    var item = $tds.text();
 
-      //update in storage
-      chrome.storage.sync.get(["item_keys", item], function(result) {
-        var keys = result.item_keys;
-        keys[idx] = input;
+    //update in storage
+    chrome.storage.sync.get(["item_keys", item], function(result) {
+      var keys = result.item_keys;
+      keys[idx] = input;
 
-        var item_val = result[item];
-        var obj = {};
-        obj[input] = item_val;
+      var item_val = result[item];
+      var obj = {};
+      obj[input] = item_val;
 
-        chrome.storage.sync.set({"item_keys":keys}, function(result) {
-          console.log(keys);
-          chrome.storage.sync.set(obj, function(result) {
-            console.log(obj);
-            var item_td = document.createElement("td");
-            item_td.innerHTML = input;
-            $tds.replaceWith(item_td);
+      chrome.storage.sync.set({
+        "item_keys": keys
+      }, function(result) {
+        console.log(keys);
+        chrome.storage.sync.set(obj, function(result) {
+          console.log(obj);
+          var item_td = document.createElement("td");
+          item_td.innerHTML = input;
+          $tds.replaceWith(item_td);
 
-            //replace current item name with new item name
-            var edit_td = document.createElement("td");
-            var edit_butt = document.createElement('button');
-            edit_butt.innerHTML = "Edit";
-            edit_butt.id = 'item_edit_button';
+          //replace current item name with new item name
+          var edit_td = document.createElement("td");
+          var edit_butt = document.createElement('button');
+          edit_butt.innerHTML = "Edit";
+          edit_butt.id = 'item_edit_button';
 
-            edit_td.appendChild(edit_butt);
+          edit_td.appendChild(edit_butt);
 
-            $row.find("td:nth-child(2)").replaceWith(edit_td);
-          });
+          $row.find("td:nth-child(2)").replaceWith(edit_td);
         });
       });
+    });
   });
 
-//remove edit item form from screen
-  $(document).on('click','#edit_item_cancel',function(e) {
+  //remove edit item form from screen
+  $(document).on('click', '#edit_item_cancel', function(e) {
     var $row = $(this).closest("tr");
     var edit_td = document.createElement("td");
     var edit_butt = document.createElement('button');
@@ -164,8 +170,8 @@ $(document).ready(function () {
 
   });
 
-//remove item name from table and from storage
-  $(document).on('click','#item_remove_button',function(e) {
+  //remove item name from table and from storage
+  $(document).on('click', '#item_remove_button', function(e) {
     //handler code here
     var $row = $(this).closest("tr");
     var idx = $row.index();
@@ -176,17 +182,18 @@ $(document).ready(function () {
     chrome.storage.sync.get(["item_keys", $tds.text()], function(result) {
       var items = result.item_keys;
       var prods = result[$tds];
-      items.splice(idx, idx+1);
+      items.splice(idx, idx + 1);
 
       chrome.storage.sync.remove($tds.text(), function(res) {});
-      chrome.storage.sync.set({"item_keys":items}, function(result) {
-      });
+      chrome.storage.sync.set({
+        "item_keys": items
+      }, function(result) {});
     });
   });
 
-//append item to table
+  //append item to table
   function add_to_table(item) {
-    if (document.getElementById("item_table") == null){
+    if (document.getElementById("item_table") == null) {
       create_table();
       var item_keys = [];
     }
@@ -222,21 +229,21 @@ $(document).ready(function () {
 
       if (result.item_keys == null) {
         val = [item];
-      }
-
-      else{
-        val =result.item_keys;
+      } else {
+        val = result.item_keys;
 
         if (result.item_keys.includes(item) == false) {
           val.push(item);
         }
       }
-      chrome.storage.sync.set({"item_keys": val, "table_length":row_count }, function(){
-      });
+      chrome.storage.sync.set({
+        "item_keys": val,
+        "table_length": row_count
+      }, function() {});
     });
   }
 
-  function create_table(){
+  function create_table() {
     var table_div = document.createElement('div');
     var table = document.createElement('table');
 
@@ -272,8 +279,7 @@ $(document).ready(function () {
 
     if (document.getElementById("item_table_div") != null) {
       document.body.insertBefore(add_item_div, item_table_div);
-    }
-    else{
+    } else {
       document.body.append(add_item_div);
     }
   }

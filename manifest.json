@@ -1,29 +1,27 @@
 {
-    "name": "Cross Cart",
-    "description" : "Base Level Extension",
-    "version": "1.0",
-    "manifest_version": 2,
-    "browser_action": {
-      "default_popup": "popup.html",
-      "default_icon": "cross_cart_logo-48.png"
-    },
+  "name": "Cross Cart",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "cross_cart_logo-48.png"
+  },
 
-    "permissions": [
-          "debugger",
-          "tabs",
-          "storage",
-          "activeTab",
-          "*://*/*",
-          "http://*/*",
-          "https://*/*"
-    ],
+  "permissions": [
+    "debugger",
+    "tabs",
+    "storage",
+    "activeTab",
+    "*://*/*",
+    "http://*/*",
+    "https://*/*"
+  ],
 
-    "content_scripts":[
-      {
-        "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-        "js": ["min.js", "ui.min.js", "prod_info.js"],
-        "run_at": "document_start",
-        "all_frames": true
-      }
-    ]
-  }
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+    "js": ["min.js", "ui.min.js", "prod_info.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }]
+}

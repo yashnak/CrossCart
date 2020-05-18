@@ -1,31 +1,33 @@
 /*
 Screen that allows for a click-through view of products in item cart.
 */
-$(document).ready(function () {
+$(document).ready(function() {
 
-//gets first product in cart (if exists) and displays product info and user's pro/cons
+  //gets first product in cart (if exists) and displays product info and user's pro/cons
   chrome.storage.sync.get("selected", function(res1) {
-      var selected_item = res1.selected;
-      chrome.storage.sync.get(selected_item, function(res2) {
-          var prods = res2[selected_item];
+    var selected_item = res1.selected;
+    chrome.storage.sync.get(selected_item, function(res2) {
+      var prods = res2[selected_item];
 
-          if (prods != null) {
-            chrome.storage.sync.set({"curr_compare_idx": 0}, function(res1) {
-              var curr_prod = JSON.parse(prods[0]);
-              create_product_info(curr_prod);
-            });
-          }
-      });
+      if (prods != null) {
+        chrome.storage.sync.set({
+          "curr_compare_idx": 0
+        }, function(res1) {
+          var curr_prod = JSON.parse(prods[0]);
+          create_product_info(curr_prod);
+        });
+      }
+    });
   });
 
 
-  $("#back_cart").click(function(){
-    window.location.href='cart.html';
+  $("#back_cart").click(function() {
+    window.location.href = 'cart.html';
   });
 
 
-//goes to previous product's information
-  $("#back_compare").click(function(){
+  //goes to previous product's information
+  $("#back_compare").click(function() {
     console.log("Back compare clicked.");
     chrome.storage.sync.get(["curr_compare_idx", "selected"], function(res) {
       var idx = res.curr_compare_idx;
@@ -36,9 +38,11 @@ $(document).ready(function () {
           var prods = res2[selected_item];
 
           idx = idx - 1;
-          chrome.storage.sync.set({"curr_compare_idx":idx}, function(res) {
-              var curr_prod = JSON.parse(prods[idx]);
-              create_product_info(curr_prod);
+          chrome.storage.sync.set({
+            "curr_compare_idx": idx
+          }, function(res) {
+            var curr_prod = JSON.parse(prods[idx]);
+            create_product_info(curr_prod);
           });
         });
       }
@@ -52,27 +56,27 @@ $(document).ready(function () {
   });
 
 
-//goes to next item's product information from cart
-  $("#next_compare").click(function(){
+  //goes to next item's product information from cart
+  $("#next_compare").click(function() {
     console.log("Next compare clicked.");
     chrome.storage.sync.get(["curr_compare_idx", "selected"], function(res) {
       var idx = res.curr_compare_idx;
 
-        var selected_item = res.selected;
-        chrome.storage.sync.get(selected_item, function(res2) {
+      var selected_item = res.selected;
+      chrome.storage.sync.get(selected_item, function(res2) {
         var prods = res2[selected_item];
         var cart_length = prods.length;
 
         //check that curr idx is less than length of cart
-        if ((idx+1) < cart_length) {
+        if ((idx + 1) < cart_length) {
           idx = idx + 1;
-          chrome.storage.sync.set({"curr_compare_idx":idx}, function(res) {
-              var curr_prod = JSON.parse(prods[idx]);
-              create_product_info(curr_prod);
+          chrome.storage.sync.set({
+            "curr_compare_idx": idx
+          }, function(res) {
+            var curr_prod = JSON.parse(prods[idx]);
+            create_product_info(curr_prod);
           });
-        }
-
-        else {
+        } else {
           alert("No more items");
         }
       });
@@ -80,13 +84,13 @@ $(document).ready(function () {
   });
 
 
-//populate screen with product data and pro/con table
+  //populate screen with product data and pro/con table
   function create_product_info(curr_prod) {
     //remove table if already constructed
-    if ($('#compare_table_div').length){
-        $("#compare_table_div").empty();
-        var div = document.getElementById("compare_table_div");
-        div.remove();
+    if ($('#compare_table_div').length) {
+      $("#compare_table_div").empty();
+      var div = document.getElementById("compare_table_div");
+      div.remove();
     }
     var table_div = document.createElement('div');
     var table = document.createElement('table');
@@ -121,12 +125,12 @@ $(document).ready(function () {
   }
 
 
-//builds pro/con table
+  //builds pro/con table
   function create_pro_con(curr_pro, curr_con) {
-    if ($('#compare_procon_table_div').length){
-        $("#compare_procon_table_div").empty();
-        var div = document.getElementById("compare_procon_table_div");
-        div.remove();
+    if ($('#compare_procon_table_div').length) {
+      $("#compare_procon_table_div").empty();
+      var div = document.getElementById("compare_procon_table_div");
+      div.remove();
     }
     var table = document.createElement('table');
     var table_div = document.createElement('div');
@@ -135,7 +139,7 @@ $(document).ready(function () {
     table.id = 'compare_procon_table';
 
     var header_row = table.insertRow();
-    var pro =  header_row.insertCell();
+    var pro = header_row.insertCell();
     pro.innerText = "Pros";
     var con = header_row.insertCell();
     con.innerText = "Cons";
